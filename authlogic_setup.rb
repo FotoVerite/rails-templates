@@ -19,7 +19,7 @@ git :submodule => "init"
 #run migratons
 rake('db:sessions:create')
 generate("authlogic", "user session")
-generate('migration',
+generate(:scaffold,
   'user', 
   'login:string',
   'email:string',
@@ -194,7 +194,7 @@ end
 END
 
 
-file 'app/model/UserObserver.rb', <<-END
+file 'app/models/userobserver.rb', <<-END
 class UserObserver < ActiveRecord::Observer
   def after_create(user)
     UserMailer.deliver_signup_notification
@@ -206,7 +206,7 @@ class UserObserver < ActiveRecord::Observer
 end
 END
 
-file 'app/model/UserMailer.rb', <<-END
+file 'app/models/usermailer.rb', <<-END
 def signup_notification(user)
   setup_email(user)
   @subject    += 'Please activate your new account'  

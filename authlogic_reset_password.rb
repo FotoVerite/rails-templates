@@ -1,8 +1,6 @@
 load_template "http://github.com/FotoVerite/rails-templates/raw/master/authlogic_setup.rb"
 
-generate(':migration', 
-  "add_password_reset_fields_to_users",
-  'perishable_token:string'
+generate(':migration', "add_password_reset_fields_to_users perishable_token:string"
 )
 
 rake('db:migrate')
@@ -30,7 +28,7 @@ class PasswordResetsController < ApplicationController
 end
 END
 
-file 'app/model/user.rb', <<-END
+file 'app/models/user.rb', <<-END
 class User < ActiveRecord::Base
 before_create :make_activation_code
 
