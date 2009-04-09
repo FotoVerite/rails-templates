@@ -187,7 +187,7 @@ class Session < ActiveRecord::Base
      self.attempted_record = search_for_record(find_by_login_method, send(login_field))
      if attempted_record.email_authenticated == false
      errors.add(email_authenticated, I18n.t('error_messages.email_authenticated',
-     :default => "Email has not been authenticated, please check your email at #{attempted_record.email}")) if send(email_authenticated) == false
+     :default => "Email has not been authenticated, please check your email at \#{attempted_record.email}")) if send(email_authenticated) == false
    end
   
 end
