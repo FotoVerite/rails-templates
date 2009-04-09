@@ -5,7 +5,7 @@ plugin 'authlogic', :git => 'git://github.com/binarylogic/authlogic.git', :submo
 
 # user_session resource
 route 'map.resource :user_session'
-route 'map.activate '/activate/:activation_code', :controller => 'user', :action => 'activate', :activation_code => nil'
+route "map.activate '/activate/:activation_code', :controller => 'user', :action => 'activate', :activation_code => nil"
 
 # Initialize submodules
 git :submodule => "init"
