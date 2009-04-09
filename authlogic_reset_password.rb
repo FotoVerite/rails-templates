@@ -135,3 +135,8 @@ private
 
 end
 END
+
+git :add => '.'
+git :commit => "-a -m 'Added Reset_Password'"
+
+puts "Succesfully added Reset_Password Option to Authlogic"
