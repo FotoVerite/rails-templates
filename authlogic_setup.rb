@@ -18,7 +18,6 @@ git :submodule => "init"
  
 #run migratons
 rake('db:sessions:create')
-generate("authlogic", "user session")
 generate(:scaffold,
   'user', 
   'login:string',
@@ -35,6 +34,8 @@ generate(:scaffold,
   "last_login_ip:string",
   "current_login_ip:string"
 )
+generate("authlogic", "session")
+
 
 rake('db:migrate')
 
