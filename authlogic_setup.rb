@@ -19,7 +19,7 @@ git :submodule => "init"
 #run migratons
 rake('db:sessions:create')
 generate("authlogic", "user session")
-generate('migration', 'user'
+generate('migration',
   'user', 
   'login:string',
   'email:string',
