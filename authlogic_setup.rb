@@ -154,7 +154,7 @@ class ApplicationController < ActionController::Base
 end
 END
 
-file 'app/model/user.rb', <<-END
+file 'app/models/user.rb', <<-END
 class User < ActiveRecord::Base
 before_create :make_activation_code
 
@@ -228,6 +228,64 @@ protected
     @sent_on     = Time.now
     @body[:user] = user
   end
+END
+
+# Views 
+file 'app/views/users/new.html.erb', <<-END
+<h1>Register</h1>
+ 
+<% form_for @user, :url => dashboard_path do |f| %>
+  <%= f.error_messages %>
+    <%= render :partial => "form", :object => f %>
+    <%= f.submit "Register" %>
+<% end %>
+END
+
+file 'app/views/users/_form.html.erb', <<-END
+<fieldset class="hidden">
+  <legend class="hidden"><%= form.object.new_record  ? Sign Up : Change Password %></legend>
+  <%= form.label :login %><br />
+  <%= form.text_field :login %><br />
+  <br />
+  <%= form.label :password, form.object.new_record? ? nil : "Change password" %><br />
+  <%= form.password_field :password %><br />
+  <br />
+  <%= form.label :password_confirmation %><br />
+  <%= form.password_field :password_confirmation %><br />
+  <br />
+  <%= form.label :email %><br />
+  <%= form.text_field :email %><br />
+  <br />
+</fieldset>
+END
+
+file 'app/views/users/edit.html.erb', <<-END
+<h1>Edit My Account</h1>
+ 
+<% form_for @user, :url => account_path do |f| %>
+  <%= f.error_messages %>
+  <%= render :partial => "form", :object => f %>
+  <%= f.submit "Update" %>
+<% end %>
+ 
+<br /><%= link_to "My Profile", dashboard_path %>
+END
+
+file  'app/views/user_sessions/new.html.erb', <<-END
+<h1>Login</h1>
+ 
+<% form_for @user_session, :url => user_session_path do |f| %>
+  <%= f.error_messages %>
+  <%= f.label :login %><br />
+  <%= f.text_field :login %><br />
+  <br />
+  <%= f.label :password %><br />
+  <%= f.password_field :password %><br />
+  <br />
+  <%= f.check_box :remember_me %><%= f.label :remember_me %><br />
+  <br />
+  <%= f.submit "Login" %>
+<% end %>
 END
 
 # Initialize submodules

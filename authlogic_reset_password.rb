@@ -59,32 +59,35 @@ end
 END
 
 file 'app/models/usermailer.rb', <<-END
-def signup_notification(user)
-  setup_email(user)
-  @subject    += 'Please activate your new account'  
-  @body[:url]  = "http://localhost:3000/activate/\#{user.activation_code}"  
-end
-
-def activation(user)
-  setup_email(user)
-  @subject    += 'Your account has been activated!'
-  @body[:url]  = "http://localhost:3000/"
-end
-
-def password_reset_instructions(user)
-   setup_email(user)
-   @subject    += "Password Reset Instructions"
-   @body        = :edit_password_reset_url => edit_password_reset_url(\#{user.perishable_token})
- end
-
-protected
-  def setup_email(user)
-    @recipients  = "\#{user.email}"
-    @from        = "accounts@#{@project_name}.com"
-    @subject     = "#{@project_name} - "
-    @sent_on     = Time.now
-    @body[:user] = user
+class UserMailer < ActionMailer::Base
+  
+  def signup_notification(user)
+    setup_email(user)
+    @subject    += 'Please activate your new account'  
+    @body[:url]  = "http://localhost:3000/activate/\#{user.activation_code}"  
   end
+
+  def activation(user)
+    setup_email(user)
+    @subject    += 'Your account has been activated!'
+    @body[:url]  = "http://localhost:3000/"
+  end
+
+  def password_reset_instructions(user)
+     setup_email(user)
+     @subject    += "Password Reset Instructions"
+     @body       :edit_password_reset_url => edit_password_reset_url(user.perishable_token)
+   end
+
+  protected
+    def setup_email(user)
+      @recipients  = "\#{user.email}"
+      @from        = "accounts@#{@project_name}.com"
+      @subject     = "#{@project_name} - "
+      @sent_on     = Time.now
+      @body[:user] = user
+    end
+end
 END
 
 file 'app/views/notifier/password_reset_instructions.erb', <<-END
@@ -132,6 +135,35 @@ private
   end
 
 end
+END
+
+file 'app/views/password_resets/edit.html.erb', <<-END
+<h1>Forgot Password</h1>
+ 
+Fill out the form below and instructions to reset your password will be emailed to you:<br />
+<br />
+ 
+<% form_tag password_resets_path do %>
+  <label>Email:</label><br />
+  <%= text_field_tag "email" %><br />
+  <br />
+  <%= submit_tag "Reset my password" %>
+<% end %>
+END
+
+file 'app/views/password_resets/new.html.erb', <<-END
+<h1>Change My Password</h1>
+ 
+<% form_for @user, :url => password_reset_path, :method => :put do |f| %>
+  <%= f.error_messages %>
+  <%= f.label :password %><br />
+  <%= f.password_field :password %><br />
+  <br />
+  <%= f.label :password_confirmation %><br />
+  <%= f.password_field :password_confirmation %><br />
+  <br />
+  <%= f.submit "Update my password and log me in" %>
+<% end %>
 END
 
 git :add => '.'
