@@ -1,6 +1,6 @@
 load_template "http://github.com/FotoVerite/rails-templates/raw/master/authlogic_setup.rb"
 
-generate(':migration', "add_password_reset_fields_to_users perishable_token:string"
+generate(:migration, "add_password_reset_fields_to_users perishable_token:string"
 )
 
 rake('db:migrate')
@@ -58,7 +58,7 @@ protected
 end
 END
 
-file 'app/model/UserMailer.rb', <<-END
+file 'app/models/usermailer.rb', <<-END
 def signup_notification(user)
   setup_email(user)
   @subject    += 'Please activate your new account'  

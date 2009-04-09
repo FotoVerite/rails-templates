@@ -179,7 +179,7 @@ protected
 end
 END
 
-file 'app/controller/session.rb', <<-END
+file 'app/controllers/session.rb', <<-END
 class Session < ActiveRecord::Base
 
    validate :validate_email_authenticated
