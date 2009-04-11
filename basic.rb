@@ -30,6 +30,7 @@ run "curl -L http://jqueryjs.googlecode.com/files/jquery-1.2.6.min.js > public/j
 run "curl -L http://jqueryjs.googlecode.com/svn/trunk/plugins/form/jquery.form.js > public/javascripts/jquery.form.js"
  
 # Install plugins as git submodules
+plugin 'restful_authenticate', 'git://github.com/technoweenie/restful-authentication.git', :submodule => true
 plugin 'rspec', :git => 'git://github.com/dchelimsky/rspec.git', :submodule => true
 plugin 'rspec-rails', :git => 'git://github.com/dchelimsky/rspec-rails.git', :submodule => true
 plugin 'asset_packager', :git => 'git://github.com/sbecker/asset_packager.git', :submodule => true
@@ -43,8 +44,10 @@ gem 'nokogiri'
 rake "gems:install", :sudo => true
 
 # welcome-route
-route "map.root :controller => 'welcome'"
+route "map.root :controller => 'main'"
+route "map.welcome :controller => 'main'"
 route 'map.resource :user_session'
+
 
 # Initialize submodules
 git :submodule => "init"
@@ -52,6 +55,7 @@ git :submodule => "init"
 # Set up sessions, RSpec, user model, OpenID, etc, and run migrations
 generate :rspec
 generate :cucumber
+generate 'restful_authenticate --stateful'
  
 # Commit all work so far to the repository
 git :add => '.'

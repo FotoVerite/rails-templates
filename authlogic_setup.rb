@@ -18,23 +18,24 @@ git :submodule => "init"
  
 #run migratons
 rake('db:sessions:create')
-generate(:scaffold,
-  'user', 
-  'login:string',
-  'email:string',
-  "crypted_password:string",
-  "password_salt:string",
-  "activation_code:string",
-  "email_authenticated:boolean",
-  "persistence_token:string", 
-  "login_count:integer",
-  "last_request_at:datetime",
-  "last_login_at:datetime",
-  "current_login_at:datetime",
-  "last_login_ip:string",
-  "current_login_ip:string"
-)
 generate("authlogic", "session")
+generate(:migrate,
+  "user 
+  login:string
+  email:string
+  crypted_password:string
+  password_salt:string
+  activation_code:string
+  email_authenticated:boolean
+  persistence_token:string 
+  login_count:integer
+  last_request_at:datetime
+  last_login_at:datetime
+  current_login_at:datetime
+  last_login_ip:string
+  current_login_ip:string"
+)
+
 
 
 rake('db:migrate')
@@ -72,7 +73,6 @@ class UsersController < ApplicationController
   before_filter :require_no_user, :only => [:new, :create]
   before_filter :require_user, :only => [:show, :edit, :update]
   
-  acts_as_authentic
   
   def new
     @user = User.new
@@ -108,11 +108,14 @@ class UsersController < ApplicationController
 end
 END
 
-file 'app/controllers/application.rb', <<-END
+file 'app/controllers/application_controller.rb', <<-END
 class ApplicationController < ActionController::Base
   
   filter_parameter_logging :password, :password_confirmation
   helper_method :current_user_session, :current_user
+  
+  helper :all # include all helpers, all the time
+  protect_from_forgery # See ActionController::RequestForgeryProtection for details
 
   private
     def current_user_session
@@ -158,6 +161,9 @@ file 'app/models/user.rb', <<-END
 class User < ActiveRecord::Base
 before_create :make_activation_code
 
+acts_as_authentic
+
+
   # Returns true if the user has just been activated.
   def recently_activated?
     @activated
@@ -179,7 +185,7 @@ protected
 end
 END
 
-file 'app/controllers/session.rb', <<-END
+file 'app/models/session.rb', <<-END
 class Session < ActiveRecord::Base
 
    validate :validate_email_authenticated
@@ -187,8 +193,9 @@ class Session < ActiveRecord::Base
    def validate_by_password
      self.attempted_record = search_for_record(find_by_login_method, send(login_field))
      if attempted_record.email_authenticated == false
-     errors.add(email_authenticated, I18n.t('error_messages.email_authenticated',
-     :default => "Email has not been authenticated, please check your email at \#{attempted_record.email}")) if send(email_authenticated) == false
+       errors.add(email_authenticated, I18n.t('error_messages.email_authenticated',
+       :default => "Email has not been authenticated, please check your email at \#{attempted_record.email}")) if send(email_authenticated) == false
+     end 
    end
   
 end
@@ -276,15 +283,18 @@ file  'app/views/user_sessions/new.html.erb', <<-END
  
 <% form_for @user_session, :url => user_session_path do |f| %>
   <%= f.error_messages %>
-  <%= f.label :login %><br />
-  <%= f.text_field :login %><br />
-  <br />
-  <%= f.label :password %><br />
-  <%= f.password_field :password %><br />
-  <br />
-  <%= f.check_box :remember_me %><%= f.label :remember_me %><br />
-  <br />
-  <%= f.submit "Login" %>
+  <fieldset class="hidden">
+  <legend class="hidden">Login</legend>
+    <%= f.label :login %><br />
+    <%= f.text_field :login %><br />
+    <br />
+    <%= f.label :password %><br />
+    <%= f.password_field :password %><br />
+    <br />
+    <%= f.check_box :remember_me %><%= f.label :remember_me %><br />
+    <br />
+    <%= f.submit "Login" %>
+  </fieldset>
 <% end %>
 END
 

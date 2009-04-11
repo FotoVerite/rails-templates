@@ -76,7 +76,7 @@ class UserMailer < ActionMailer::Base
   def password_reset_instructions(user)
      setup_email(user)
      @subject    += "Password Reset Instructions"
-     @body       :edit_password_reset_url => edit_password_reset_url(user.perishable_token)
+     @body       = {:edit_password_reset_url => edit_password_reset_url(user.perishable_token)}
    end
 
   protected
@@ -113,7 +113,7 @@ end
 
 def update
   @user.password = params[:user][:password]
-  @user.password_confirmation = params[:user][: password_confirmation]
+  @user.password_confirmation = params[:user][:password_confirmation]
   if @user.save
     flash[:notice] = "Password successfully updated"
     redirect_to account_url
