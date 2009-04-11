@@ -30,7 +30,7 @@ run "curl -L http://jqueryjs.googlecode.com/files/jquery-1.2.6.min.js > public/j
 run "curl -L http://jqueryjs.googlecode.com/svn/trunk/plugins/form/jquery.form.js > public/javascripts/jquery.form.js"
  
 # Install plugins as git submodules
-plugin 'restful_authenticate', 'git://github.com/technoweenie/restful-authentication.git', :submodule => true
+plugin 'restful_authenticate', :git =>'git://github.com/technoweenie/restful-authentication.git', :submodule => true
 plugin 'rspec', :git => 'git://github.com/dchelimsky/rspec.git', :submodule => true
 plugin 'rspec-rails', :git => 'git://github.com/dchelimsky/rspec-rails.git', :submodule => true
 plugin 'asset_packager', :git => 'git://github.com/sbecker/asset_packager.git', :submodule => true
